@@ -4,31 +4,13 @@ import AddIcon from "@material-ui/icons/Add";
 import { withStyles } from "@material-ui/styles";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as taskActions from "../../actions/task";
 import TaskForm from "../../components/TaskForm";
 import TaskList from "../../components/TaskList";
 import { STATUSES } from "../../constants";
 import styles from "./styles";
-
-const listTask = [
-  {
-    id: 1,
-    title: "Read book",
-    description: "Read material book",
-    status: 0,
-  },
-  {
-    id: 2,
-    title: "Play game",
-    description: "play dota",
-    status: 2,
-  },
-  {
-    id: 3,
-    title: "Football",
-    description: "play fo4",
-    status: 1,
-  },
-];
 
 class TaskBoard extends Component {
   constructor(props) {
@@ -36,6 +18,12 @@ class TaskBoard extends Component {
     this.state = {
       open: false,
     };
+  }
+
+  componentDidMount() {
+    const { taskActionCreators } = this.props;
+    const { fetchListTaskRequest } = taskActionCreators;
+    fetchListTaskRequest();
   }
 
   handleClose = () => {
@@ -58,12 +46,13 @@ class TaskBoard extends Component {
   }
 
   renderBoard() {
+    const { listTask } = this.props;
     let xhtml = null;
     xhtml = (
       <Grid container spacing={2}>
         {STATUSES.map((status) => {
           const taskFilter = listTask.filter(
-            (task) => task.status === status.value
+            (task) => task.status === status.value,
           );
           return (
             <TaskList task={taskFilter} status={status} key={status.value} />
@@ -96,6 +85,23 @@ class TaskBoard extends Component {
 
 TaskBoard.propTypes = {
   classes: PropTypes.object,
+  taskActionCreators: PropTypes.shape({
+    fetchListTaskRequest: PropTypes.func,
+  }),
+  listTask: PropTypes.array,
 };
 
-export default withStyles(styles)(TaskBoard);
+const mapStateToProps = (state) => {
+  return {
+    listTask: state.task.listTask,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    taskActionCreators: bindActionCreators(taskActions, dispatch),
+  };
+};
+
+export default withStyles(styles)(
+  connect(mapStateToProps, mapDispatchToProps)(TaskBoard),
+);

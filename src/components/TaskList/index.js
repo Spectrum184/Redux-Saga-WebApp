@@ -7,15 +7,15 @@ import styles from "./styles";
 
 class TaskList extends Component {
   render() {
-    const { classes, status, taskList } = this.props;
+    const { classes, status, task } = this.props;
     return (
       <Grid item md={4} xs={12} key={status.value}>
         <Box mt={2} mb={2}>
           <div className={classes.status}>{status.label}</div>
         </Box>
         <div className={classes.wrapperListTask}>
-          {taskList.map((task) => {
-            return <TaskItem status={status} task={task} key={task.id} />;
+          {task.map((t) => {
+            return <TaskItem status={status} task={t} key={t.id} />;
           })}
         </div>
       </Grid>

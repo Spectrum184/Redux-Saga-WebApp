@@ -12,3 +12,5 @@ export const STATUSES = [
     label: "HOÀN THÀNH",
   },
 ];
+
+export const API_ENDPOINT = "http://localhost:3000";

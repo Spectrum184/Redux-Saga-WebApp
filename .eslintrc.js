@@ -19,6 +19,7 @@ module.exports = {
     "react/require-default-props": 0,
     "react/prefer-stateless-function": 0,
     "import/prefer-default-export": 0,
+    "no-case-declarations": 0,
     "prettier/prettier": [
       "error",
       {
