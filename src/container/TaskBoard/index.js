@@ -7,43 +7,38 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as taskActions from "../../actions/task";
-import TaskForm from "../../components/TaskForm";
+import * as modalActions from "../../actions/modal";
+import TaskForm from "../TaskForm";
 import TaskList from "../../components/TaskList";
 import { STATUSES } from "../../constants";
 import styles from "./styles";
+import SearchBox from "../../components/SearchBox";
 
 class TaskBoard extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      open: false,
-    };
-  }
-
   componentDidMount() {
     const { taskActionCreators } = this.props;
-    const { fetchListTaskRequest } = taskActionCreators;
-    fetchListTaskRequest();
+    const { fetchListTask } = taskActionCreators;
+    fetchListTask();
   }
-
-  handleClose = () => {
-    this.setState({
-      open: false,
-    });
-  };
 
   openForm = () => {
-    this.setState({
-      open: true,
-    });
+    const { modalActionCreators } = this.props;
+    const {
+      showModal,
+      changeModalTitle,
+      changeModalContent,
+    } = modalActionCreators;
+    showModal();
+    changeModalTitle("Thêm mới công việc");
+    changeModalContent(<TaskForm />);
   };
 
-  renderForm() {
-    let xhtml = null;
-    const { open } = this.state;
-    xhtml = <TaskForm open={open} onClose={this.handleClose} />;
-    return xhtml;
-  }
+  handleFilter = (e) => {
+    const { value } = e.target;
+    const { taskActionCreators } = this.props;
+    const { filterTask } = taskActionCreators;
+    filterTask(value);
+  };
 
   renderBoard() {
     const { listTask } = this.props;
@@ -63,6 +58,13 @@ class TaskBoard extends Component {
     return xhtml;
   }
 
+  renderSearchBox() {
+    let xhtml = null;
+
+    xhtml = <SearchBox handleChange={this.handleFilter} />;
+    return xhtml;
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -76,8 +78,8 @@ class TaskBoard extends Component {
           <AddIcon />
           Thêm mới công việc
         </Button>
+        {this.renderSearchBox()}
         {this.renderBoard()}
-        {this.renderForm()}
       </div>
     );
   }
@@ -86,9 +88,16 @@ class TaskBoard extends Component {
 TaskBoard.propTypes = {
   classes: PropTypes.object,
   taskActionCreators: PropTypes.shape({
-    fetchListTaskRequest: PropTypes.func,
+    fetchListTask: PropTypes.func,
+    filterTask: PropTypes.func,
   }),
   listTask: PropTypes.array,
+  modalActionCreators: PropTypes.shape({
+    showModal: PropTypes.func,
+    hideModal: PropTypes.func,
+    changeModalTitle: PropTypes.func,
+    changeModalContent: PropTypes.func,
+  }),
 };
 
 const mapStateToProps = (state) => {
@@ -99,6 +108,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     taskActionCreators: bindActionCreators(taskActions, dispatch),
+    modalActionCreators: bindActionCreators(modalActions, dispatch),
   };
 };
 

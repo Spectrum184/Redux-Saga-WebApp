@@ -1,3 +1,10 @@
 export const FETCH_TASK = "FETCH_TASK";
 export const FECTH_TASK_SUCCESS = "FECTH_TASK_SUCCESS";
 export const FECTH_TASK_FAILED = "FECTH_TASK_FAILED";
+
+export const FILTER_TASK = "FILTER_TASK";
+export const FILTER_TASK_SUCCESS = "FILTER_TASK_SUCCESS";
+
+export const ADD_TASK = "ADD_TASK";
+export const ADD_TASK_SUCCESS = "ADD_TASK_SUCCESS";
+export const ADD_TASK_FAILED = "ADD_TASK_FAILED";
